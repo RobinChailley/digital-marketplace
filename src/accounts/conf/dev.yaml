@@ -1,0 +1,16 @@
+host: localhost
+port: "8080"
+
+credentials:
+  api_key: AccountsAPIKEY
+  jwt_secret: MySecretApiKey
+
+ads-service:
+  url: http://localhost:8081
+  api_key: AdsAPIKEY
+
+database-config:
+  user: postgres
+  database: robinchailley
+  addr: :5432
+  password: password
