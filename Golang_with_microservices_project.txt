@@ -64,16 +64,16 @@ A transaction should have at least the following informations (you can add some 
 	- status
 
 Your back-end must implement the following actions related to a transaction (you can add some if needed):
-	- [ ] Make an offer on an ad
-	- [ ] Accept an offer on its own ad
-	- [ ] Refuse an offer on its own ad
-	- [ ] List all its own transaction
+	- [x] Make an offer on an ad
+	- [x] Accept an offer on its own ad
+	- [x] Refuse an offer on its own ad
+	- [x] List all its own transaction
 
 ##############################################################################################################
 - status :
 	- PROPOSITION
 	- ACCEPTED
-	- REJECTED
+	- DECLINED
 	- CANCELLED
 
 	- a user send a post on a endpoint that will create a transaction, and link the seller, the buyer and the Ads.
@@ -92,7 +92,7 @@ Your back-end must implement the following actions related to a transaction (you
 		- the bid is removed from the buyer, and added to the seller
 		- the status PROPOSITION -> DONE
 
-	
+
 ##############################################################################################################
 
 
@@ -118,3 +118,9 @@ Add an admin role. Admin should be able to:
 	- [ ] Add / retrieve funds to any account
 	- [ ] Delete any ads
 	- [ ] Cancel any transaction (think about the consequence of a transaction cancel)
+
+
+- can not create a transaction proposition if the bid is greater than the current amount on the balance buyer
+- how to make an enum ?
+- we can not create an ads without picture
+- we can't make an offer to our own ads
