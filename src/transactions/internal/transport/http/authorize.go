@@ -6,6 +6,7 @@ import (
 
 	"marketplace/transactions/domain"
 	"marketplace/transactions/internal/conf"
+	"marketplace/transactions/internal/request"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,13 @@ func AuthMiddleware(db *pg.DB, config conf.Configuration) gin.HandlerFunc {
 			c.Abort()
 		}
 
-		claims := &usecase.Claims{}
+		if len(tokenSplitted) != 2 {
+			c.Status(http.StatusUnauthorized)
+			c.Abort()
+			return
+		}
+
+		claims := &request.Claims{}
 
 		_, err := jwt.ParseWithClaims(tokenSplitted[1], claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.Credentials.JwtSecret), nil

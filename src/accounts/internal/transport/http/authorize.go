@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"marketplace/accounts/domain"
-	"marketplace/accounts/internal/usecase"
 	"marketplace/accounts/internal/conf"
+	"marketplace/accounts/internal/usecase"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -21,6 +21,12 @@ func AuthMiddleware(db *pg.DB, config conf.Configuration) gin.HandlerFunc {
 		if token == "" {
 			c.Status(http.StatusUnauthorized)
 			c.Abort()
+		}
+
+		if len(tokenSplitted) != 2 {
+			c.Status(http.StatusUnauthorized)
+			c.Abort()
+			return
 		}
 
 		claims := &usecase.Claims{}

@@ -20,6 +20,7 @@ func CreateAds() CreateAdsCmd {
 		ads.Price = createAds.Price
 		ads.UserId = userId
 		ads.Picture = createAds.Picture
+		ads.Sold = false
 
 		_, err := db.Model(ads).Insert()
 

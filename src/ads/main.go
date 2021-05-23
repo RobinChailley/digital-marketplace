@@ -46,6 +46,8 @@ func initRoute(router *gin.Engine, db *pg.DB, config conf.Configuration) {
 	router.DELETE("/delete/:id", http.AuthMiddleware(db, config), http.DeleteOwnAdsHandler(db, usecase.DeleteOwnAds()))
 	router.DELETE("/delete/all", http.AuthMiddleware(db, config), http.DeleteAllMyAdsHandler(db, usecase.DeleteAllMyAds()))
 	router.PATCH("/:id", http.AuthMiddleware(db, config), http.UpdateMyAdsHandler(db, usecase.UpdateMyAds()))
+	router.PATCH("/set-sold/:id", http.AuthMiddleware(db, config), http.SetSoldAdsHandler(db, usecase.SetSoldAds()))
+	router.GET("/:id", http.AuthMiddleware(db, config), http.GetAdsByIdHandler(db, usecase.GetAdsById()))
 }
 
 

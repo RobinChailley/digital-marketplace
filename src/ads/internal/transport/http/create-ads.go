@@ -28,11 +28,11 @@ func CreateAdsHandler(db *pg.DB, cmd usecase.CreateAdsCmd) gin.HandlerFunc {
 
 		if err != nil {
 			logrus.WithError(err).Error("The price field must be a float")
-			c.Status(http.StatusInternalServerError)
+			c.Status(http.StatusBadRequest)
 			return
 		}
 
-		openedFile, err := file.Open()
+		openedFile, err := file.Open() // TODO : petit probleme ici parfois?
 
 		if err != nil {
 			logrus.WithError(err).Error("Can not open the file")

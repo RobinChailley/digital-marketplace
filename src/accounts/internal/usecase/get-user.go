@@ -3,8 +3,9 @@ package usecase
 import (
 	"marketplace/accounts/domain"
 	"marketplace/accounts/internal/infrastructure/ads"
-	"github.com/go-pg/pg/v10"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-pg/pg/v10"
 )
 
 type GetUserCmd func (db *pg.DB, c *gin.Context, email string) (*domain.Account, error)

@@ -3,12 +3,13 @@ package domain
 import "fmt"
 
 type Ads struct {
-	Id 				int64  	`pg:",notnull"`
-	Title 			string 	`pg:",notnull"`
-	Description 	string 	`pg:",notnull"`
-	Price 			float64 `pg:",notnull"`
-	UserId			int64	`pg:",notnull,fk"`
-	Picture 		string  `pg:",notnull"`
+	Id 						int64  		`pg:",notnull"`
+	Title 				string 		`pg:",notnull"`
+	Description 	string 		`pg:",notnull"`
+	Price 				float64 	`pg:",notnull"`
+	UserId				int64			`pg:",notnull,fk"`
+	Picture 			string  	`pg:",notnull"`
+	Sold					bool 			`pg:",use_zero"`
 }
 
 func StringAds(a *Ads) string {

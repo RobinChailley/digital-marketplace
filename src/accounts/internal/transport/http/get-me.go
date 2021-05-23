@@ -15,7 +15,7 @@ type GetMeResponse struct {
 	Email 		string 			`json:"email"`
 	Username 	string 			`json:"username"`
 	Password 	string 			`json:"-"`
-	Balance 	int64  			`json:"balance"`
+	Balance 	float64  			`json:"balance"`
 	Ads			[]domain.Ads   	`json:"ads"`
 }
 

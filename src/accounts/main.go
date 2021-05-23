@@ -48,6 +48,8 @@ func initRoute(router *gin.Engine, db *pg.DB, config conf.Configuration, adsFetc
 	router.GET("/get-me", http.AuthMiddleware(db, config), http.GetMeHandler(db, usecase.GetMe(adsFetcher)))
 	router.POST("/add-funds", http.AuthMiddleware(db, config), http.AddFundsHandler(db, usecase.AddFunds()))
 	router.GET("/info/:email", http.AuthMiddleware(db, config), http.GetUserHandler(db, usecase.GetUser(adsFetcher)))
+	router.GET("/info/byId/:id", http.AuthMiddleware(db, config), http.GetUserByIdHandler(db, usecase.GetUserById(adsFetcher)))
+	router.POST("/update-balance/byId/:id", http.AuthMiddleware(db, config), http.UpdateBalanceByIdHandler(db, usecase.UpdateBalanceById()))
 }
 
 

@@ -6,6 +6,8 @@ import (
 	"marketplace/transactions/internal/conf"
 	"marketplace/transactions/internal/infrastructure/accounts"
 	"marketplace/transactions/internal/infrastructure/ads"
+	"marketplace/transactions/internal/transport/http"
+	"marketplace/transactions/internal/usecase"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -40,14 +42,11 @@ func createSchema(db *pg.DB) error {
 Assign function to endpoints
 */
 func initRoute(router *gin.Engine, db *pg.DB, config conf.Configuration, adsFetcher ads.Fetcher, accountsFetcher accounts.Fetcher) {
-	// router.GET("/ping", func (c *gin.Context) { c.JSON(200, "pong")})
-	// router.POST("/sign-up", http.SignUpHandler(db, usecase.SignUp()))
-	// router.POST("/sign-in", http.SignInHandler(db, usecase.SignIn(config)))
-	// router.DELETE("/delete-me", http.AuthMiddleware(db, config), http.DeleteMeHandler(db, usecase.DeleteMe(adsFetcher)))
-	// router.PATCH("/update-me", http.AuthMiddleware(db, config), http.UpdateMeHandler(db, usecase.UpdateMe()))
-	// router.GET("/get-me", http.AuthMiddleware(db, config), http.GetMeHandler(db, usecase.GetMe(adsFetcher)))
-	// router.POST("/add-funds", http.AuthMiddleware(db, config), http.AddFundsHandler(db, usecase.AddFunds()))
-	// router.GET("/info/:email", http.AuthMiddleware(db, config), http.GetUserHandler(db, usecase.GetUser(adsFetcher)))
+	router.POST("/", http.AuthMiddleware(db, config), http.CreateTransactionHandler(db, usecase.CreateTransaction(adsFetcher, accountsFetcher)))
+	router.GET("/", http.AuthMiddleware(db, config), http.GetMyTransactionsHandler(db, usecase.GetMyTransactions()))
+	router.POST("/message/:id", http.AuthMiddleware(db, config), http.PostMessageOnTransactionHandler(db, usecase.PostMessageOnTransaction()))
+	router.POST("/:id/accept", http.AuthMiddleware(db, config), http.AcceptDeclineTransactionHandler(db, usecase.AcceptDeclineTransaction("accept", adsFetcher, accountsFetcher)))
+	router.POST("/:id/decline", http.AuthMiddleware(db, config), http.AcceptDeclineTransactionHandler(db, usecase.AcceptDeclineTransaction("decline", adsFetcher, accountsFetcher)))
 }
 
 
@@ -114,7 +113,7 @@ func main() {
 	}
 
 	adsFetcher := ads.NewAPI(config.AdsService)
-	accountsFetcher := accounts.NewAPI(config.AdsService)
+	accountsFetcher := accounts.NewAPI(config.AccountsService)
 
 	router := gin.Default()
 	initRoute(router, db, config, adsFetcher, accountsFetcher)

@@ -7,7 +7,7 @@ type Account struct {
 	Email 			string 	`pg:",notnull,unique"`
 	Username 		string 	`pg:",notnull,unique"`
 	Password 		string 	`pg:",notnull"`
-	Balance 		int64  	`pg:",use_zero"`
+	Balance 		float64	`pg:",use_zero"`
 	Ads					[]Ads   `pg:"rel:has-many"`
 }
 
