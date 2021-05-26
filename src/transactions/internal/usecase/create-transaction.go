@@ -13,21 +13,24 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type CreateTransactionCmd func (db *pg.DB, c *gin.Context, createTransaction *request.CreateTransactionRequest, user domain.Account) (domain.Transaction, error)
+type CreateTransactionCmd func(db *pg.DB, c *gin.Context, createTransaction *request.CreateTransactionRequest, user domain.Account) (domain.Transaction, error)
 
 func CreateTransaction(adsFetcher ads.Fetcher, accountsFetcher accounts.Fetcher) CreateTransactionCmd {
 
-	return func (db *pg.DB, c *gin.Context, createTransaction *request.CreateTransactionRequest, user domain.Account) (domain.Transaction, error) {
+	return func(db *pg.DB, c *gin.Context, createTransaction *request.CreateTransactionRequest, user domain.Account) (domain.Transaction, error) {
+
+		if createTransaction.Bid > user.Balance {
+			return domain.Transaction{}, errors.New("too expensive")
+		}
 
 		ads, err := adsFetcher.GetAdsById(c, createTransaction.AdsId)
-	
+
 		if err != nil {
 			if strings.Contains(err.Error(), "404") {
 				return domain.Transaction{}, errors.New("Not found")
 			}
 			return domain.Transaction{}, err
 		}
-
 
 		seller, err := accountsFetcher.GetUserById(c, ads.UserId)
 
@@ -41,15 +44,15 @@ func CreateTransaction(adsFetcher ads.Fetcher, accountsFetcher accounts.Fetcher)
 		}
 
 		transaction := domain.Transaction{
-			Buyer: &user,
-			BuyerId: user.Id,
-			Seller: &seller,
+			Buyer:    &user,
+			BuyerId:  user.Id,
+			Seller:   &seller,
 			SellerId: seller.Id,
-			Ads: &ads,
-			AdsId: ads.Id,
+			Ads:      &ads,
+			AdsId:    ads.Id,
 			Messages: []domain.Message{},
-			Bid: createTransaction.Bid,
-			Status: "PROPOSITION",
+			Bid:      createTransaction.Bid,
+			Status:   "PROPOSITION",
 		}
 
 		_, err = db.Model(&transaction).Insert()

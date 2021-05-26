@@ -12,16 +12,17 @@ import (
 )
 
 type GetUserByIdResponse struct {
-	Id 				int64  					`json:"id"`
-	Email 		string 					`json:"email"`
-	Username 	string 					`json:"username"`
-	Password 	string 					`json:"-"`
-	Balance 	float64  					`json:"-"`
-	Ads				[]domain.Ads   	`json:"ads"`
+	Id       int64        `json:"id"`
+	Email    string       `json:"email"`
+	Username string       `json:"username"`
+	Password string       `json:"-"`
+	Balance  float64      `json:"-"`
+	Ads      []domain.Ads `json:"ads"`
+	Admin    bool         `json:"admin"`
 }
 
 func GetUserByIdHandler(db *pg.DB, cmd usecase.GetUserByIdCmd) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		userId := c.Param("id")
 		intUserId, err := strconv.ParseInt(userId, 10, 64)
 
@@ -29,7 +30,7 @@ func GetUserByIdHandler(db *pg.DB, cmd usecase.GetUserByIdCmd) gin.HandlerFunc {
 			logrus.WithError(err).Error("Bad request : The id param must be an integer")
 			c.Status(http.StatusBadRequest)
 			return
-		}		
+		}
 
 		user, err := cmd(db, c, intUserId)
 

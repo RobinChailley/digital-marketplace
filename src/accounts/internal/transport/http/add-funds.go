@@ -1,20 +1,20 @@
 package http
 
 import (
-	"marketplace/accounts/domain"
-	"github.com/go-pg/pg/v10"
-	"marketplace/accounts/internal/usecase"
 	"github.com/gin-gonic/gin"
+	"github.com/go-pg/pg/v10"
 	"github.com/sirupsen/logrus"
+	"marketplace/accounts/domain"
+	"marketplace/accounts/internal/usecase"
 	"net/http"
 )
 
 type AddFundsRequest struct {
-	Funds int64  		`json:"funds"`
+	Funds int64 `json:"funds"`
 }
 
 func AddFundsHandler(db *pg.DB, cmd usecase.AddFundsCmd) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		addFundsRequest := &AddFundsRequest{}
 		err := c.BindJSON(addFundsRequest)
 

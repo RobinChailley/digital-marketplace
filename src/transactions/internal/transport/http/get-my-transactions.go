@@ -2,6 +2,7 @@ package http
 
 import (
 	"marketplace/transactions/domain"
+	"marketplace/transactions/internal/request"
 	"marketplace/transactions/internal/usecase"
 	"net/http"
 
@@ -10,11 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-
 func GetMyTransactionsHandler(db *pg.DB, cmd usecase.GetMyTransactionsCmd) gin.HandlerFunc {
 	return func (c *gin.Context) {
 		user := c.MustGet("acc").(domain.Account)
-
 		transacs, err := cmd(db, user.Id)
 
 		if err != nil {
@@ -23,6 +22,6 @@ func GetMyTransactionsHandler(db *pg.DB, cmd usecase.GetMyTransactionsCmd) gin.H
 			return
 		}
 
-		c.JSON(http.StatusOK, transacs)
+		c.JSON(http.StatusOK, request.ConvertToResponse(transacs))
 	}
 }

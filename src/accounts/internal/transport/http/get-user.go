@@ -11,16 +11,17 @@ import (
 )
 
 type GetUserResponse struct {
-	Id 				int64  					`json:"id"`
-	Email 		string 					`json:"email"`
-	Username 	string 					`json:"username"`
-	Password 	string 					`json:"-"`
-	Balance 	float64  					`json:"-"`
-	Ads				[]domain.Ads   	`json:"ads"`
+	Id       int64        `json:"id"`
+	Email    string       `json:"email"`
+	Username string       `json:"username"`
+	Password string       `json:"-"`
+	Balance  float64      `json:"-"`
+	Ads      []domain.Ads `json:"ads"`
+	Admin    bool         `json:"admin"`
 }
 
 func GetUserHandler(db *pg.DB, cmd usecase.GetUserCmd) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		userEmail := c.Param("email")
 
 		if userEmail == "" {

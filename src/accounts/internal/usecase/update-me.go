@@ -2,15 +2,26 @@ package usecase
 
 import (
 	"marketplace/accounts/domain"
-	"github.com/go-pg/pg/v10"
 	"marketplace/accounts/internal/request"
+
+	"github.com/go-pg/pg/v10"
 )
 
-type UpdateMeCmd func (db *pg.DB, acc *domain.Account, update *request.UpdateMeRequest) (*domain.Account, error)
+type UpdateMeResponse struct {
+	Id       int64        `json:"id"`
+	Email    string       `json:"email"`
+	Username string       `json:"username"`
+	Password string       `json:"-"`
+	Balance  float64      `json:"balance"`
+	Ads      []domain.Ads `json:"-"`
+	Admin    bool         `json:"admin"`
+}
+
+type UpdateMeCmd func(db *pg.DB, acc *domain.Account, update *request.UpdateMeRequest) (UpdateMeResponse, error)
 
 func UpdateMe() UpdateMeCmd {
 
-	return func (db *pg.DB, acc *domain.Account, update *request.UpdateMeRequest) (*domain.Account, error) {
+	return func(db *pg.DB, acc *domain.Account, update *request.UpdateMeRequest) (UpdateMeResponse, error) {
 		if update.Email != "" {
 			acc.Email = update.Email
 		}
@@ -26,12 +37,9 @@ func UpdateMe() UpdateMeCmd {
 		_, err := db.Model(acc).WherePK().Update()
 
 		if err != nil {
-			return nil, err
+			return UpdateMeResponse{}, err
 		}
 
-
-		acc.Password = "-/-"  // TODO : How to do it cleanly?
-
-		return acc, nil
+		return UpdateMeResponse(*acc), nil
 	}
 }

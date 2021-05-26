@@ -58,6 +58,6 @@ func PostMessageOnTransactionHandler(db *pg.DB, cmd usecase.PostMessageOnTransac
 			return
 		}
 
-		c.JSON(http.StatusCreated, transac)
+		c.JSON(http.StatusCreated, request.ConvertToResponse([]domain.Transaction{transac}))
 	}
 }

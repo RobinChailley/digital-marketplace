@@ -11,18 +11,18 @@ import (
 )
 
 type GetMeResponse struct {
-	Id 			int64  			`json:"id"`
-	Email 		string 			`json:"email"`
-	Username 	string 			`json:"username"`
-	Password 	string 			`json:"-"`
-	Balance 	float64  			`json:"balance"`
-	Ads			[]domain.Ads   	`json:"ads"`
+	Id       int64        `json:"id"`
+	Email    string       `json:"email"`
+	Username string       `json:"username"`
+	Password string       `json:"-"`
+	Balance  float64      `json:"balance"`
+	Ads      []domain.Ads `json:"ads"`
+	Admin    bool         `json:"admin"`
 }
 
 func GetMeHandler(db *pg.DB, cmd usecase.GetMeCmd) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		user := c.MustGet("acc").(domain.Account)
-
 
 		fullUser, err := cmd(db, c, &user)
 

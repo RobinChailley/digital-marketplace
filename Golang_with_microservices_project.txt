@@ -69,32 +69,6 @@ Your back-end must implement the following actions related to a transaction (you
 	- [x] Refuse an offer on its own ad
 	- [x] List all its own transaction
 
-##############################################################################################################
-- status :
-	- PROPOSITION
-	- ACCEPTED
-	- DECLINED
-	- CANCELLED
-
-	- a user send a post on a endpoint that will create a transaction, and link the seller, the buyer and the Ads.
-		- the user has to specify :
-			- a bids
-			- an ads ID
-		- the ads is automatically set to "PROPOSITION"
-	- a user send a post on a endpoint that will create a message on a transaction :
-		- the user has to specify :
-			- a transaction ID
-			- a text (message)
-	- a user can list his (only his) transactions
-	- a user can reject a transaction (if he is the seller)
-	- a user can cancel a transaction proposition (if he is the buyer, status PROPOSITION -> CANCELLED)
-	- a user can accept a transaction
-		- the bid is removed from the buyer, and added to the seller
-		- the status PROPOSITION -> DONE
-
-
-##############################################################################################################
-
 
 +------+
 | Hint |
@@ -102,11 +76,11 @@ Your back-end must implement the following actions related to a transaction (you
 
 - [x] Some API requests must be called with an authenticated users, others don't (Be pragmatic).
 - [x] You might need to authorize user's on some API requests (Think about access token).
-- [ ] Some data might be sensible and should not be shared to everyone (One's again, be pragmatic).
-- [ ] Obviously making an offer and accepting a transaction has several impact on data.
-- [ ] Think of a way to avoid double spending problem.
-- [ ] Searching an object in a database based on a subquery string isn't a good idea.
-- [ ] Micro services needs to communicate between each others but not with the same reliability.
+- [x] Some data might be sensible and should not be shared to everyone (One's again, be pragmatic).
+- [x] Obviously making an offer and accepting a transaction has several impact on data.
+- [x] Think of a way to avoid double spending problem.
+- [x] Searching an object in a database based on a subquery string isn't a good idea.
+- [x] Micro services needs to communicate between each others but not with the same reliability.
 
 +-------+
 | Bonus |
@@ -118,9 +92,3 @@ Add an admin role. Admin should be able to:
 	- [ ] Add / retrieve funds to any account
 	- [ ] Delete any ads
 	- [ ] Cancel any transaction (think about the consequence of a transaction cancel)
-
-
-- can not create a transaction proposition if the bid is greater than the current amount on the balance buyer
-- how to make an enum ?
-- we can not create an ads without picture
-- we can't make an offer to our own ads

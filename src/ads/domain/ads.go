@@ -8,7 +8,7 @@ type Ads struct {
 	Description 	string 	`pg:",notnull"`
 	Price 				float64 `pg:",notnull"`
 	UserId				int64		`pg:",notnull,fk"`
-	Picture 			string  `pg:",notnull"`
+	Picture 			string  `pg:""`
 	Sold					bool 		`pg:",use_zero"`
 }
 

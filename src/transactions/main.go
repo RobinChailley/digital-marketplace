@@ -32,8 +32,8 @@ func createSchema(db *pg.DB) error {
 			IfNotExists: true,
 		})
 		if err != nil {
-					return err
-			}
+			return err
+		}
 	}
 	return nil
 }
@@ -47,19 +47,19 @@ func initRoute(router *gin.Engine, db *pg.DB, config conf.Configuration, adsFetc
 	router.POST("/message/:id", http.AuthMiddleware(db, config), http.PostMessageOnTransactionHandler(db, usecase.PostMessageOnTransaction()))
 	router.POST("/:id/accept", http.AuthMiddleware(db, config), http.AcceptDeclineTransactionHandler(db, usecase.AcceptDeclineTransaction("accept", adsFetcher, accountsFetcher)))
 	router.POST("/:id/decline", http.AuthMiddleware(db, config), http.AcceptDeclineTransactionHandler(db, usecase.AcceptDeclineTransaction("decline", adsFetcher, accountsFetcher)))
+	router.POST("/:id/cancel", http.AuthMiddleware(db, config), http.CancelTransactionHandler(db, usecase.CancelTransaction()))
 }
 
-
 /**
- Open the config file, decode the yaml content and return the configuration object
- */
+Open the config file, decode the yaml content and return the configuration object
+*/
 func initConfig() (conf.Configuration, error) {
 	f, err := os.Open("conf/dev.yaml")
 	if err != nil {
 		return conf.Configuration{}, errors.Wrap(err, "Impossible d'ouvrir le fichier de configuration.")
 	}
 
-	defer func() {f.Close()}()
+	defer func() { f.Close() }()
 
 	var config = &conf.Configuration{}
 	decoder := yaml.NewDecoder(f)
@@ -71,15 +71,14 @@ func initConfig() (conf.Configuration, error) {
 	return *config, nil
 }
 
-
 /**
- Connect to the database, try a simple query to check out the connexion
- */
+Connect to the database, try a simple query to check out the connexion
+*/
 func logOnDb(config *conf.Configuration) (*pg.DB, error) {
 	db := pg.Connect(&pg.Options{
-		User: config.DatabaseConfig.User,
+		User:     config.DatabaseConfig.User,
 		Database: config.DatabaseConfig.Database,
-		Addr: config.DatabaseConfig.Addr,
+		Addr:     config.DatabaseConfig.Addr,
 		Password: config.DatabaseConfig.Password,
 	})
 
@@ -93,8 +92,8 @@ func logOnDb(config *conf.Configuration) (*pg.DB, error) {
 }
 
 /**
- The main function
- */
+The main function
+*/
 func main() {
 
 	config, err := initConfig()

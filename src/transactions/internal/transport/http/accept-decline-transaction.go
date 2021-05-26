@@ -2,6 +2,7 @@ package http
 
 import (
 	"marketplace/transactions/domain"
+	"marketplace/transactions/internal/request"
 	"marketplace/transactions/internal/usecase"
 	"net/http"
 	"strconv"
@@ -12,9 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-
 func AcceptDeclineTransactionHandler(db *pg.DB, cmd usecase.AcceptDeclineTransactionCmd) gin.HandlerFunc {
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		user := c.MustGet("acc").(domain.Account)
 		transacId := c.Param("id")
 
@@ -23,7 +23,7 @@ func AcceptDeclineTransactionHandler(db *pg.DB, cmd usecase.AcceptDeclineTransac
 		if err != nil {
 			logrus.WithError(err).Error("Bad request. The 'id' field must be an integer.")
 			c.Status(http.StatusBadRequest)
-			return			
+			return
 		}
 
 		transac, err := cmd(db, c, intTransacId, user.Id)
@@ -32,17 +32,17 @@ func AcceptDeclineTransactionHandler(db *pg.DB, cmd usecase.AcceptDeclineTransac
 			if err.Error() == "not found" {
 				logrus.WithError(err)
 				c.Status(http.StatusNotFound)
-				return				
+				return
 			} else if strings.Contains(err.Error(), "this transaction is already") {
 				logrus.WithError(err)
 				c.JSON(http.StatusBadRequest, err.Error())
-				return				
+				return
 			}
 			logrus.WithError(err).Error("An error has occured.")
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		c.JSON(http.StatusOK, transac)
+		c.JSON(http.StatusOK, request.ConvertToResponse([]domain.Transaction{transac}))
 	}
 }

@@ -41,7 +41,7 @@ func AuthMiddleware(db *pg.DB, config conf.Configuration) gin.HandlerFunc {
 			return
 		}
 
-		var accs []domain.Account;
+		var accs []domain.Account
 		db.Model(&accs).Where("account.id = ? ", claims.Id).Select()
 
 		if len(accs) < 1 {

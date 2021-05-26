@@ -15,6 +15,7 @@ Username      string
 Password      string
 Balance       float64
 Ads           []Ads
+Admin         bool
 ```
 
 ### Endpoints
@@ -62,6 +63,31 @@ Ads           []Ads
   - NOT FOUND 404
   - INTERNAL ERROR 500
 - (AUTH) : POST("/update-balance/byId/:id") : Update the user's balance with a delta (user specified by ID)
+  - OK 200
+  - BAD REQUEST 400
+  - UNAUTHORIZED 401
+  - NOT FOUND 404
+  - INTERNAL ERROR 500
+
+### BONUS
+
+- (ADMIN AUTH) : GET("/") : Get the full content of every users
+  - OK 200
+  - UNAUTHORIZED 401
+  - INTERNAL ERROR 500
+- (ADMIN AUTH) : GET("/:id") : Get the full content of a user's account
+  - OK 200
+  - BAD REQUEST 400
+  - UNAUTHORIZED 401
+  - NOT FOUND 404
+  - INTERNAL ERROR 500
+- (ADMIN AUTH) : DELETE("/:id") : Delete an account
+  - OK 200
+  - BAD REQUEST 400
+  - UNAUTHORIZED 401
+  - NOT FOUND 404
+  - INTERNAL ERROR 500
+- (ADMIN AUTH) : PATCH("/:id") : Update an account
   - OK 200
   - BAD REQUEST 400
   - UNAUTHORIZED 401
@@ -148,12 +174,12 @@ Status            string
 
 # Message
 
-Id 						    int64
-SenderId 			    int64
-Sender   			    *Account
+Id                int64
+SenderId          int64
+Sender            *Account
 TransactionId     int64
-Transaction 	    *Transaction
-Message				    string
+Transaction       *Transaction
+Message           string
 ```
 
 ### Endpoints
@@ -169,16 +195,24 @@ Message				    string
   - INTERNAL ERROR 500
 - (AUTH) : POST("/message/:id") : Post a message in the transaction's conversation
   - CREATED 201
-  - NOT FOUND 404
   - UNAUTHORIZED 401
+  - NOT FOUND 404
   - INTERNAL ERROR 500
 - (AUTH) : POST("/:id/accept") : Accept a transaction
   - CREATED 201
-  - NOT FOUND 404
+  - BAD REQUEST 400
   - UNAUTHORIZED 401
+  - NOT FOUND 404
   - INTERNAL ERROR 500
 - (AUTH) : POST("/:id/decline") : Decline a transaction
   - CREATED 201
-  - NOT FOUND 404
+  - BAD REQUEST 400
   - UNAUTHORIZED 401
+  - NOT FOUND 404
+  - INTERNAL ERROR 500
+- (AUTH) : POST("/:id/cancel") : Cancel a transaction
+  - OK 200
+  - BAD REQUEST 400
+  - UNAUTHORIZED 401
+  - NOT FOUND 404
   - INTERNAL ERROR 500

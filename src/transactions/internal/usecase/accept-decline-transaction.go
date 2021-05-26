@@ -12,11 +12,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type AcceptDeclineTransactionCmd func (db *pg.DB, c *gin.Context, transacId int64,  userId int64) (domain.Transaction, error)
+type AcceptDeclineTransactionCmd func(db *pg.DB, c *gin.Context, transacId int64, userId int64) (domain.Transaction, error)
 
 func AcceptDeclineTransaction(acceptOrDecline string, adsFetcher ads.Fetcher, accountsFetcher accounts.Fetcher) AcceptDeclineTransactionCmd {
 
-	return func (db *pg.DB, c *gin.Context, transacId int64, userId int64) (domain.Transaction, error) {
+	return func(db *pg.DB, c *gin.Context, transacId int64, userId int64) (domain.Transaction, error) {
 		var transac domain.Transaction
 
 		err := db.Model(&transac).
@@ -36,12 +36,11 @@ func AcceptDeclineTransaction(acceptOrDecline string, adsFetcher ads.Fetcher, ac
 		if transac.Id == 0 {
 			return domain.Transaction{}, errors.New("not found")
 		}
-	
+
 		if err != nil {
 			logrus.WithError(err)
-			return domain.Transaction{}, err 
+			return domain.Transaction{}, err
 		}
-
 
 		if acceptOrDecline == "accept" {
 			err = accountsFetcher.UpdateUserBalanceById(c, transac.BuyerId, -transac.Bid)
@@ -61,21 +60,19 @@ func AcceptDeclineTransaction(acceptOrDecline string, adsFetcher ads.Fetcher, ac
 
 		if err != nil {
 			logrus.WithError(err)
-			return domain.Transaction{}, err 
+			return domain.Transaction{}, err
 		}
 
 		if acceptOrDecline != "accept" {
 			return transac, nil
 		}
 
-
 		err = accountsFetcher.UpdateUserBalanceById(c, transac.SellerId, transac.Bid)
-	
+
 		if err != nil {
 			logrus.Error("Can not add money on the seller accounts")
 			return domain.Transaction{}, errors.New("can not add money on the seller accounts")
 		}
-
 
 		soldAds, err := adsFetcher.SetSoldToAds(c, transac.AdsId)
 
@@ -85,10 +82,6 @@ func AcceptDeclineTransaction(acceptOrDecline string, adsFetcher ads.Fetcher, ac
 		}
 
 		transac.Ads = &soldAds
-
-		// TODO : if accepted, + balance on the seller, - balance on the buyer
-		// TODO : if accepted, ads -> selled
-		// TODO : if accepted and the buyer does not have the balance, then cancel it
 
 		return transac, nil
 	}

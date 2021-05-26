@@ -22,7 +22,7 @@ func CreateAdsHandler(db *pg.DB, cmd usecase.CreateAdsCmd) gin.HandlerFunc {
 		title := c.PostForm("title")
 		description := c.PostForm("description")
 		price := c.PostForm("price")
-		file, _ := c.FormFile("file")
+		file, _ := c.FormFile("picture")
 
 		floatPrice, err := strconv.ParseFloat(price, 10)
 
@@ -32,26 +32,31 @@ func CreateAdsHandler(db *pg.DB, cmd usecase.CreateAdsCmd) gin.HandlerFunc {
 			return
 		}
 
-		openedFile, err := file.Open() // TODO : petit probleme ici parfois?
+		sEnc := ""
 
-		if err != nil {
-			logrus.WithError(err).Error("Can not open the file")
-			c.Status(http.StatusInternalServerError)
-			return
-		}
+		if file != nil {
+			openedFile, err := file.Open()
 	
-		defer openedFile.Close()
-
-		content, err := ioutil.ReadAll(openedFile)
-
-		if err != nil {
-			logrus.WithError(err).Error("Can not read the file")
-			c.Status(http.StatusInternalServerError)
-			return
+			if err != nil {
+				logrus.WithError(err).Error("Can not open the file")
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+		
+			defer openedFile.Close()
+	
+			content, err := ioutil.ReadAll(openedFile)
+	
+			if err != nil {
+				logrus.WithError(err).Error("Can not read the file")
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+	
+	
+			sEnc = b64.StdEncoding.EncodeToString(content)
 		}
 
-
-		sEnc := b64.StdEncoding.EncodeToString(content)
 				
 
 

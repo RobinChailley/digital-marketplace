@@ -36,7 +36,7 @@ func SignInHandler(db *pg.DB, cmd usecase.SignInCmd) gin.HandlerFunc {
 
 		if err != nil {
 			logrus.WithError(err).Error()
-			c.Status(http.StatusNotFound)
+			c.Status(http.StatusUnauthorized)
 			return
 		}
 
